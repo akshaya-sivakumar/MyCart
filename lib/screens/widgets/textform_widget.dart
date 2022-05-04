@@ -22,9 +22,8 @@ class TextFormWidget extends StatelessWidget {
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          prefixIcon: prefixIcon,
-          suffixIcon: suffixiconButton,
-          border: OutlineInputBorder(),
+          prefixIcon: prefixIcon,          suffixIcon: suffixiconButton,
+          border: const OutlineInputBorder(),
           labelText: title,
         ),
       ),
