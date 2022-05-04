@@ -37,11 +37,11 @@ class _LoginState extends State<Login> {
               TextFormWidget(
                   title: "Username",
                   controller: usernameController,
-                  prefixIcon: Icon(Icons.person)),
+                  prefixIcon: const Icon(Icons.person)),
               TextFormWidget(
                   title: "Password",
                   controller: passwordController,
-                  prefixIcon: Icon(Icons.lock)),
+                  prefixIcon: const Icon(Icons.lock)),
               Padding(
                 padding: const EdgeInsets.only(top: 50.0),
                 child: ElevatedButton(

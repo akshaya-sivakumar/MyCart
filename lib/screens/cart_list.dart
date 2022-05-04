@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mycart/bloc/products_bloc/products_bloc.dart';
 
 class CartList extends StatefulWidget {
-  CartList({Key? key}) : super(key: key);
+  const CartList({Key? key}) : super(key: key);
 
   @override
   State<CartList> createState() => _CartListState();
@@ -28,8 +28,8 @@ class _CartListState extends State<CartList> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: ElevatedButton.icon(
             onPressed: () {},
-            icon: Icon(Icons.add_shopping_cart),
-            label: Text("Add item")),
+            icon: const Icon(Icons.add_shopping_cart),
+            label: const Text("Add item")),
         appBar: AppBar(
             title: const Text("Cart"),
             bottom: TabBar(
@@ -45,14 +45,14 @@ class _CartListState extends State<CartList> {
           }, */
           builder: (context, ProductsState state) {
             if (state is ProductsLoad) {
-              print("loading");
+            
               return Center(
                   child: CircularProgressIndicator(
                 color: Theme.of(context).primaryColor,
               ));
             }
             if (state is ProductsDone) {
-              print("done");
+             
               return TabBarView(children: [
                 ListView.builder(
                     itemCount: state.products.length,
@@ -86,7 +86,7 @@ class _CartListState extends State<CartList> {
                     })
               ]);
             }
-            print("error");
+           
             return Center(
                 child: CircularProgressIndicator(
               color: Theme.of(context).primaryColor,

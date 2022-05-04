@@ -39,16 +39,16 @@ class _RegistrationState extends State<Registration> {
               TextFormWidget(
                   title: "Username",
                   controller: usernameController,
-                  prefixIcon: Icon(Icons.person)),
+                  prefixIcon: const Icon(Icons.person)),
               TextFormWidget(
                   title: "Password",
                   controller: passwordController,
-                  prefixIcon: Icon(Icons.lock)),
+                  prefixIcon: const Icon(Icons.lock)),
               TextFormWidget(
                 title: "Date Of Birth",
                 controller: dateOfBirthController,
                 suffixiconButton: IconButton(
-                  icon: Icon(Icons.edit_calendar),
+                  icon: const Icon(Icons.edit_calendar),
                   onPressed: selectDob,
                 ),
               ),
@@ -88,7 +88,8 @@ class _RegistrationState extends State<Registration> {
             : DateTime.now(),
         firstDate: DateTime(1900, 8),
         lastDate: DateTime.now());
-    if (picked != null)
+    if (picked != null) {
       dateOfBirthController.text = DateFormat("yyyy-MM-dd").format(picked);
+    }
   }
 }

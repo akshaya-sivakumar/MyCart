@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mycart/screens/login_screen.dart';
+
 import 'package:mycart/screens/route_generator.dart';
 
 void main() {

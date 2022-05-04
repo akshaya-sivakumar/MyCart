@@ -17,7 +17,7 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
                   create: (context) => ProductsBloc(),
-                  child: CartList(),
+                  child: const CartList(),
                 ));
       default:
         return _errorRoute();
