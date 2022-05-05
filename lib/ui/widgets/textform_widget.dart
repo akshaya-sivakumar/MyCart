@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class TextFormWidget extends StatelessWidget {
   final String title;
   final TextEditingController controller;
-
+  final bool readOnly;
   final Icon? prefixIcon;
   final IconButton? suffixiconButton;
   final bool withlabel, textAreaField;
@@ -12,6 +12,7 @@ class TextFormWidget extends StatelessWidget {
       required this.title,
       required this.controller,
       this.prefixIcon,
+      this.readOnly = false,
       this.withlabel = false,
       this.suffixiconButton,
       this.textAreaField = false})
@@ -29,6 +30,7 @@ class TextFormWidget extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                 child: TextField(
                   controller: controller,
+                  readOnly: readOnly,
                   decoration: InputDecoration(
                     prefixIcon: prefixIcon,
                     suffixIcon: suffixiconButton,
@@ -47,6 +49,7 @@ class TextFormWidget extends StatelessWidget {
           Text(title),
           TextFormField(
             controller: controller,
+            readOnly: readOnly,
             decoration: InputDecoration(
               suffixIcon: suffixiconButton,
               border: UnderlineInputBorder(

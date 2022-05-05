@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:intl/intl.dart';
 import 'package:mycart/bloc/user_bloc/user_bloc.dart';
@@ -25,11 +28,13 @@ class _RegistrationState extends State<Registration> {
         if (state is UserAdded) {
           FlutterToast.showToast("User Registered Successfully",
               color: Colors.green);
-          Navigator.pop(context);
+          Navigator.of(context).pushReplacementNamed("/");
         }
       });
   }
 
+  final ImagePicker _picker = ImagePicker();
+  XFile? _images;
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController dateOfBirthController = TextEditingController();
@@ -40,7 +45,7 @@ class _RegistrationState extends State<Registration> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              Padding(
+              /*  Padding(
                 padding: const EdgeInsets.only(top: 60.0),
                 child: Center(
                   child: SizedBox(
@@ -55,6 +60,35 @@ class _RegistrationState extends State<Registration> {
                         color: Theme.of(context).primaryColor,
                       )),
                 ),
+              ), */
+              Padding(
+                padding: const EdgeInsets.only(top: 60.0),
+                child: Center(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                          width: 200,
+                          height: 150,
+                          /*decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(50.0)),*/
+                          child: InkWell(
+                              onTap: () {
+                                loadPicker(ImageSource.gallery);
+                              },
+                              child: _images == null
+                                  ? Image.asset("lib/assets/profile.png")
+                                  : ClipOval(
+                                      child: SizedBox.fromSize(
+                                          size: Size.fromRadius(
+                                              48), // Image radius
+                                          child:
+                                              Image.file(File(_images!.path))),
+                                    ))),
+                      Text("Upload Profile Picture")
+                    ],
+                  ),
+                ),
               ),
               TextFormWidget(
                   title: "Username",
@@ -67,6 +101,7 @@ class _RegistrationState extends State<Registration> {
               TextFormWidget(
                 title: "Date Of Birth",
                 controller: dateOfBirthController,
+                readOnly: true,
                 suffixiconButton: IconButton(
                   icon: const Icon(Icons.edit_calendar),
                   onPressed: selectDob,
@@ -80,7 +115,7 @@ class _RegistrationState extends State<Registration> {
                         userName: usernameController.text,
                         passWord: passwordController.text,
                         dateOfBirth: dateOfBirthController.text,
-                        profile: "")));
+                        profile: _images!.path)));
                     /*    Navigator.push(
                         context, MaterialPageRoute(builder: (_) => HomePage())); */
                   },
@@ -95,14 +130,30 @@ class _RegistrationState extends State<Registration> {
               ),
               TextButton(
                   onPressed: () {
-                    // Navigator.of(context).pushNamed("/registration");
+                    Navigator.of(context).pushReplacementNamed("/");
                   },
-                  child: const Text('New User? Create Account'))
+                  child: const Text('Already have account? Login'))
             ],
           ),
         ),
       ),
     );
+  }
+
+  loadPicker(ImageSource source) async {
+    XFile? cameraFile;
+    if (source == ImageSource.gallery) {
+      cameraFile = await _picker.pickImage(source: source, imageQuality: 100);
+    } else {
+      cameraFile = await _picker.pickImage(
+          source: source, imageQuality: 100, maxHeight: 1800, maxWidth: 1800);
+    }
+
+    if (cameraFile != null) {
+      setState(() {
+        _images = XFile(cameraFile!.path);
+      });
+    }
   }
 
   void selectDob() async {

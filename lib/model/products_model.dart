@@ -8,6 +8,7 @@ class Product {
     required this.description,
     required this.manufactureDate,
     required this.manufactureAddress,
+    this.userId,
   });
   late final int? id;
   late final String productName;
@@ -17,7 +18,7 @@ class Product {
   late final String description;
   late final String manufactureDate;
   late final String manufactureAddress;
-
+  String? userId;
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     productName = json['productName'];
@@ -27,6 +28,7 @@ class Product {
     description = json['description'];
     manufactureDate = json['manufactureDate'];
     manufactureAddress = json['manufactureAddress'];
+    userId = json['userId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -39,6 +41,7 @@ class Product {
     _data['description'] = description;
     _data['manufactureDate'] = manufactureDate;
     _data['manufactureAddress'] = manufactureAddress;
+    if (userId != null) _data['userId'] = userId;
     return _data;
   }
 }

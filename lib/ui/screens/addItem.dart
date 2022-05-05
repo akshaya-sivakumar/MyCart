@@ -25,6 +25,7 @@ class _AddItemState extends State<AddItem> {
       ..stream.listen((state) {
         if (state is ProductsAdded) {
           FlutterToast.showToast("Product Added Successfully");
+          Navigator.pop(context);
         }
       });
   }
@@ -38,45 +39,30 @@ class _AddItemState extends State<AddItem> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      floatingLocation: FloatingActionButtonLocation.centerFloat,
-      floatingButton: ElevatedButton.icon(
-          onPressed: () {
-            context.read<ProductsBloc>().add(ProductAddEvent(Product(
-                productName: productnameController.text,
-                modelNumber: modelNoController.text,
-                price: priceController.text,
-                description: descriptionController.text,
-                manufactureDate: manufacturedateController.text,
-                manufactureAddress: manufactureaddController.text,
-                category: widget.category)));
-            // Navigator.pushNamed(context, "/addItem");
-          },
-          icon: const Icon(Icons.add_shopping_cart),
-          label: const Text("Add")),
+      title: Text("Add Item"),
+      bottomappbar: Container(
+        width: MediaQuery.of(context).size.width * 0.3,
+        child: ElevatedButton.icon(
+            onPressed: () {
+              context.read<ProductsBloc>().add(ProductAddEvent(Product(
+                  productName: productnameController.text,
+                  modelNumber: modelNoController.text,
+                  price: priceController.text,
+                  description: descriptionController.text,
+                  manufactureDate: manufacturedateController.text,
+                  manufactureAddress: manufactureaddController.text,
+                  category: widget.category)));
+            },
+            icon: const Icon(Icons.add_shopping_cart),
+            label: const Text("Add")),
+      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Container(
-              padding: const EdgeInsets.only(left: 20, right: 10),
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.only(bottom: 5),
-              decoration: const BoxDecoration(),
-              height: 70,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: const [
-                  Text(
-                    "Add Item",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
+            SizedBox(
+              height: 10,
             ),
             TextFormWidget(
               title: "Product Name",

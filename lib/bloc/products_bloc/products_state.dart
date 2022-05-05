@@ -14,4 +14,7 @@ class ProductsDone extends ProductsState {
 }
 
 class ProductsError extends ProductsState {}
+
 class ProductsAdded extends ProductsState {}
+
+class ProductsDeleted extends ProductsState {}
