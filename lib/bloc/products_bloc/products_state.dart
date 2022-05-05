@@ -8,7 +8,9 @@ class ProductsInitial extends ProductsState {}
 class ProductsLoad extends ProductsState {}
 
 class ProductsDone extends ProductsState {
-  final List<Products> products;
+  final List<Product> products;
 
   ProductsDone(this.products);
 }
+
+class ProductsError extends ProductsState {}

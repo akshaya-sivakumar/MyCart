@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mycart/ui/route_generator.dart';
 
-import 'package:mycart/screens/route_generator.dart';
+
 
 void main() {
   runApp(const MyApp());

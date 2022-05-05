@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mycart/bloc/products_bloc/products_bloc.dart';
-import 'package:mycart/screens/cart_list.dart';
-import 'package:mycart/screens/login_screen.dart';
-import 'package:mycart/screens/registration_screen.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mycart/ui/screens/addItem.dart';
+import 'package:mycart/ui/screens/cart_list.dart';
+import 'package:mycart/ui/screens/login_screen.dart';
+import 'package:mycart/ui/screens/registration_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -13,6 +15,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const Login());
       case '/registration':
         return MaterialPageRoute(builder: (_) => const Registration());
+      case '/addItem':
+        return MaterialPageRoute(builder: (_) => AddItem());
       case '/cartList':
         return MaterialPageRoute(
             builder: (_) => BlocProvider(

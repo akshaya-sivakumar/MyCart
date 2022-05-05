@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:mycart/screens/widgets/textform_widget.dart';
 
-class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+import 'package:intl/intl.dart';
+import 'package:mycart/ui/widgets/textform_widget.dart';
+
+
+
+class Registration extends StatefulWidget {
+  const Registration({Key? key}) : super(key: key);
 
   @override
-  _LoginState createState() => _LoginState();
+  _RegistrationState createState() => _RegistrationState();
 }
 
-class _LoginState extends State<Login> {
+class _RegistrationState extends State<Registration> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController dateOfBirthController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,15 +47,24 @@ class _LoginState extends State<Login> {
                   title: "Password",
                   controller: passwordController,
                   prefixIcon: const Icon(Icons.lock)),
+              TextFormWidget(
+                title: "Date Of Birth",
+                controller: dateOfBirthController,
+                suffixiconButton: IconButton(
+                  icon: const Icon(Icons.edit_calendar),
+                  onPressed: selectDob,
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(top: 50.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, "/cartList");
+                    /*    Navigator.push(
+                        context, MaterialPageRoute(builder: (_) => HomePage())); */
                   },
                   child: const Text(
-                    'Login',
-                    style: TextStyle(color: Colors.white, fontSize: 25),
+                    'Register',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
                   ),
                 ),
               ),
@@ -67,5 +81,18 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
+  }
+
+  void selectDob() async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: (dateOfBirthController.text != "")
+            ? DateTime.parse(dateOfBirthController.text)
+            : DateTime.now(),
+        firstDate: DateTime(1900, 8),
+        lastDate: DateTime.now());
+    if (picked != null) {
+      dateOfBirthController.text = DateFormat("yyyy-MM-dd").format(picked);
+    }
   }
 }
