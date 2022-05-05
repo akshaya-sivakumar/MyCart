@@ -8,6 +8,7 @@ import 'package:mycart/ui/widgets/textform_widget.dart';
 import 'package:mycart/ui/widgets/toast_widget.dart';
 
 import '../widgets/AppScaffold.dart';
+import '../widgets/text_widget.dart';
 
 class CartList extends StatefulWidget {
   const CartList({Key? key}) : super(key: key);
@@ -182,14 +183,51 @@ class _CartListState extends State<CartList>
                                                       color: Colors.grey))),
                                           margin: EdgeInsets.all(10),
                                           child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              Text("Description",
-                                                  style: TextStyle(
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              TextWidget(
+                                                  text: "Description",
+                                                  fontWeight: FontWeight.bold),
+                                              TextWidget(
+                                                  text: "       " +
+                                                      state.products[index]
+                                                          .description),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  TextWidget(
+                                                      text:
+                                                          "Manufactured Date ",
                                                       fontWeight:
-                                                          FontWeight.bold)),
-                                              Text("       " +
-                                                  state.products[index]
-                                                      .description),
+                                                          FontWeight.bold),
+                                                  Text(state.products[index]
+                                                      .manufactureDate)
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              TextWidget(
+                                                  text: "Manufactured Address ",
+                                                  fontWeight: FontWeight.bold),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              TextWidget(
+                                                  text: state.products[index]
+                                                      .manufactureAddress),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
                                             ],
                                           ),
                                         ),

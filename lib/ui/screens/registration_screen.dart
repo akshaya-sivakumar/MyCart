@@ -80,12 +80,16 @@ class _RegistrationState extends State<Registration> {
                                   ? Image.asset("lib/assets/profile.png")
                                   : ClipOval(
                                       child: SizedBox.fromSize(
-                                          size: Size.fromRadius(
+                                          size: const Size.fromRadius(
                                               48), // Image radius
                                           child:
                                               Image.file(File(_images!.path))),
                                     ))),
-                      Text("Upload Profile Picture")
+                      const Text(
+                        "Upload Profile Picture",
+                        style: TextStyle(
+                            color: Colors.grey, fontWeight: FontWeight.w500),
+                      )
                     ],
                   ),
                 ),
