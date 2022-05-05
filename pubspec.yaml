@@ -36,8 +36,14 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_bloc: ^8.0.1
   intl: ^0.17.0
-  equatable: ^2.0.3
+  
   flutter_secure_storage: ^5.0.2
+  sqfentity: ^2.2.0+5
+  sqfentity_gen: ^2.2.0+10
+  image_picker: ^0.8.5
+  fluttertoast: ^8.0.9
+  hexcolor: ^2.0.7
+ 
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +55,10 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
+  analyzer: ^2.8.0
+  build_runner: ^2.1.10
+  build_resolvers: ^2.0.6
+  json_serializable: ^6.2.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

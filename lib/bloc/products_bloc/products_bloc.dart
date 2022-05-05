@@ -17,5 +17,9 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
         emit(ProductsError());
       }
     });
+    on<ProductAddEvent>((event, emit) async {
+      final products = await ProductsRepository().addProduct(event.product);
+      emit(ProductsAdded());
+    });
   }
 }

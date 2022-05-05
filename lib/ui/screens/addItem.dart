@@ -1,19 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:mycart/bloc/products_bloc/products_bloc.dart';
+import 'package:mycart/model/products_model.dart';
 import 'package:mycart/ui/widgets/AppScaffold.dart';
+import 'package:mycart/ui/widgets/toast_widget.dart';
 
 import '../widgets/textform_widget.dart';
 
 class AddItem extends StatefulWidget {
-  AddItem({Key? key}) : super(key: key);
+  final String category;
+  AddItem({Key? key, this.category = ""}) : super(key: key);
 
   @override
   State<AddItem> createState() => _AddItemState();
 }
 
 class _AddItemState extends State<AddItem> {
+  late ProductsBloc productBloc;
+  @override
+  void initState() {
+    super.initState();
+    productBloc = BlocProvider.of<ProductsBloc>(context)
+      ..stream.listen((state) {
+        if (state is ProductsAdded) {
+          FlutterToast.showToast("Product Added Successfully");
+        }
+      });
+  }
+
   TextEditingController productnameController = TextEditingController();
   TextEditingController modelNoController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController manufacturedateController = TextEditingController();
   TextEditingController manufactureaddController = TextEditingController();
@@ -23,11 +41,19 @@ class _AddItemState extends State<AddItem> {
       floatingLocation: FloatingActionButtonLocation.centerFloat,
       floatingButton: ElevatedButton.icon(
           onPressed: () {
-            Navigator.pushNamed(context, "/addItem");
+            context.read<ProductsBloc>().add(ProductAddEvent(Product(
+                productName: productnameController.text,
+                modelNumber: modelNoController.text,
+                price: priceController.text,
+                description: descriptionController.text,
+                manufactureDate: manufacturedateController.text,
+                manufactureAddress: manufactureaddController.text,
+                category: widget.category)));
+            // Navigator.pushNamed(context, "/addItem");
           },
           icon: const Icon(Icons.add_shopping_cart),
           label: const Text("Add")),
-      body: Container(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -60,6 +86,11 @@ class _AddItemState extends State<AddItem> {
             TextFormWidget(
               title: "Model Number",
               controller: modelNoController,
+              withlabel: true,
+            ),
+            TextFormWidget(
+              title: "Price",
+              controller: priceController,
               withlabel: true,
             ),
             TextFormWidget(

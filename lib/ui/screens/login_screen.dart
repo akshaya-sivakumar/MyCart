@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:mycart/bloc/user_bloc/user_bloc.dart';
+import 'package:mycart/model/login_request.dart';
 import 'package:mycart/ui/widgets/textform_widget.dart';
+import 'package:mycart/ui/widgets/toast_widget.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -9,6 +14,21 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  late UserBloc userBloc;
+  @override
+  void initState() {
+    super.initState();
+    userBloc = BlocProvider.of<UserBloc>(context)
+      ..stream.listen((state) {
+        if (state is LoginFailed) print(state.message.toString());
+        //FlutterToast.showToast(state.message.toString(), color: Colors.red);
+        if (state is LoginSuccess) {
+          FlutterToast.showToast("Login Successfully", color: Colors.green);
+          Navigator.pushNamed(context, "/cartList");
+        }
+      });
+  }
+
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   @override
@@ -46,7 +66,10 @@ class _LoginState extends State<Login> {
                 padding: const EdgeInsets.only(top: 50.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, "/cartList");
+                    context.read<UserBloc>().add(LoginEvent(LoginRequest(
+                          userName: usernameController.text,
+                          passWord: passwordController.text,
+                        )));
                   },
                   child: const Text(
                     'Login',

@@ -7,16 +7,30 @@ import 'package:mycart/ui/screens/cart_list.dart';
 import 'package:mycart/ui/screens/login_screen.dart';
 import 'package:mycart/ui/screens/registration_screen.dart';
 
+import '../bloc/user_bloc/user_bloc.dart';
+
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    // final args = settings.arguments;
+    final args = settings.arguments;
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => const Login());
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                  create: (context) => UserBloc(),
+                  child: Login(),
+                ));
       case '/registration':
-        return MaterialPageRoute(builder: (_) => const Registration());
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                  create: (context) => UserBloc(),
+                  child: const Registration(),
+                ));
       case '/addItem':
-        return MaterialPageRoute(builder: (_) => AddItem());
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                  create: (context) => ProductsBloc(),
+                  child: AddItem(category: args as String),
+                ));
       case '/cartList':
         return MaterialPageRoute(
             builder: (_) => BlocProvider(

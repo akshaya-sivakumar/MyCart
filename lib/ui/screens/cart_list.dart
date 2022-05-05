@@ -12,6 +12,7 @@ class CartList extends StatefulWidget {
 
 class _CartListState extends State<CartList>
     with SingleTickerProviderStateMixin {
+  String? category;
   late ProductsBloc productsBloc;
   late TabController tabController;
   TextEditingController productnameController = TextEditingController();
@@ -37,7 +38,8 @@ class _CartListState extends State<CartList>
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: ElevatedButton.icon(
             onPressed: () {
-              Navigator.pushNamed(context, "/addItem");
+              Navigator.pushNamed(context, "/addItem",
+                  arguments: categories[tabController.index]);
             },
             icon: const Icon(Icons.add_shopping_cart),
             label: const Text("Add item")),

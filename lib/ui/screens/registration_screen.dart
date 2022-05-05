@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
+import 'package:mycart/bloc/user_bloc/user_bloc.dart';
 import 'package:mycart/ui/widgets/textform_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mycart/ui/widgets/toast_widget.dart';
 
-
+import '../../model/user_model.dart';
 
 class Registration extends StatefulWidget {
   const Registration({Key? key}) : super(key: key);
@@ -13,6 +16,20 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
+  late UserBloc userBloc;
+  @override
+  void initState() {
+    super.initState();
+    userBloc = BlocProvider.of<UserBloc>(context)
+      ..stream.listen((state) {
+        if (state is UserAdded) {
+          FlutterToast.showToast("User Registered Successfully",
+              color: Colors.green);
+          Navigator.pop(context);
+        }
+      });
+  }
+
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController dateOfBirthController = TextEditingController();
@@ -59,6 +76,11 @@ class _RegistrationState extends State<Registration> {
                 padding: const EdgeInsets.only(top: 50.0),
                 child: ElevatedButton(
                   onPressed: () {
+                    context.read<UserBloc>().add(UserAddEvent(User(
+                        userName: usernameController.text,
+                        passWord: passwordController.text,
+                        dateOfBirth: dateOfBirthController.text,
+                        profile: "")));
                     /*    Navigator.push(
                         context, MaterialPageRoute(builder: (_) => HomePage())); */
                   },
@@ -73,7 +95,7 @@ class _RegistrationState extends State<Registration> {
               ),
               TextButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamed("/registration");
+                    // Navigator.of(context).pushNamed("/registration");
                   },
                   child: const Text('New User? Create Account'))
             ],
