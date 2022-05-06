@@ -45,6 +45,7 @@ dependencies:
   hexcolor: ^2.0.7
   expandable: ^5.0.1
   local_auth: ^2.0.0
+  flutter_launcher_icons: ^0.9.2
  
 
 dev_dependencies:
@@ -66,6 +67,11 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "lib/assets/app_logo.png"
+
 flutter:
 
   # The following line ensures that the Material Icons font is
