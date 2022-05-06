@@ -108,8 +108,7 @@ class _CartListState extends State<CartList>
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
-              Icon(Icons.remove_shopping_cart,
-                  size: 30, color: Colors.grey),
+              Icon(Icons.remove_shopping_cart, size: 30, color: Colors.grey),
               Center(
                 child: Text(
                   "Your cart is empty",
@@ -134,7 +133,7 @@ class _CartListState extends State<CartList>
                               (oldIndex > newIndex && oldIndex != newIndex);
                       if (isPositionChanged) {
                         await reorderData(oldIndex, newIndex, products);
-                        await reorderData(newIndex, oldIndex, products);
+
                         productsBloc.add(
                             Fetchproducts(categories[tabController.index]));
                       }
@@ -237,14 +236,14 @@ class _CartListState extends State<CartList>
 
   Future<void> reorderData(
       int oldIndex, int newIndex, List<Product> products) async {
-    var product = products
-        .where((element) => element.orderId == oldIndex.toString())
-        .toList()
-        .first;
-
-    product.orderId = newIndex.toString();
-
-    await SqlProducts.fromMap(product.toJson()).upsert();
+    final Product productAtOldPosition = products[oldIndex];
+    products.removeAt(oldIndex);
+    final int newData = oldIndex < newIndex ? newIndex - 1 : newIndex;
+    products.insert(newData, productAtOldPosition);
+    for (int i = 0; i < products.length; i++) {
+      products[i].orderId = i.toString();
+      await SqlProducts.fromMap(products[i].toJson()).upsert();
+    }
   }
 
   TableRow tableRowdata(String title, data) {
