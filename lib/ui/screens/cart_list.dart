@@ -108,11 +108,12 @@ class _CartListState extends State<CartList>
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.list),
+              const Icon(Icons.remove_shopping_cart,
+                  size: 30, color: Colors.grey),
               Center(
                 child: const Text(
-                  "No Data Found",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  "Your cart is empty",
+                  style: TextStyle(fontSize: 17, color: Colors.grey),
                 ),
               )
             ],
@@ -126,7 +127,6 @@ class _CartListState extends State<CartList>
               children: List.generate(
                 5,
                 (i) => ReorderableListView.builder(
-                    scrollDirection: Axis.vertical,
                     itemCount: products.length,
                     onReorder: (int oldIndex, newIndex) async {
                       final bool isPositionChanged =
