@@ -80,9 +80,7 @@ class _LoginState extends State<Login> {
                     child: SizedBox(
                         width: 200,
                         height: 150,
-                        /*decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(50.0)),*/
+                       
                         child: Icon(
                           Icons.shopping_cart_checkout,
                           size: 100,

@@ -158,8 +158,7 @@ class _RegistrationState extends State<Registration> {
                             passWord: passwordController.text,
                             dateOfBirth: dateOfBirthController.text,
                             profile: _images != null ? _images!.path : "")));
-                        /*    Navigator.push(
-                          context, MaterialPageRoute(builder: (_) => HomePage())); */
+                       
                       }
                     },
                     child: const Text(

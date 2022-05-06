@@ -28,7 +28,7 @@ class TextFormWidget extends StatelessWidget {
         : textAreaField
             ? textArea(context)
             : Padding(
-                //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
+             
                 padding:
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                 child: TextFormField(
