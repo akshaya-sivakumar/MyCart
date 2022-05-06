@@ -107,11 +107,11 @@ class _CartListState extends State<CartList>
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.remove_shopping_cart,
+            children: const [
+              Icon(Icons.remove_shopping_cart,
                   size: 30, color: Colors.grey),
               Center(
-                child: const Text(
+                child: Text(
                   "Your cart is empty",
                   style: TextStyle(fontSize: 17, color: Colors.grey),
                 ),
