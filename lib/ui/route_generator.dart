@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mycart/bloc/products_bloc/products_bloc.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mycart/ui/screens/addItem.dart';
+import 'package:mycart/ui/screens/add_item.dart';
 import 'package:mycart/ui/screens/cart_list.dart';
 import 'package:mycart/ui/screens/login_screen.dart';
 import 'package:mycart/ui/screens/registration_screen.dart';
@@ -17,7 +17,7 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
                   create: (context) => UserBloc(),
-                  child: Login(),
+                  child: const Login(),
                 ));
       case '/registration':
         return MaterialPageRoute(
@@ -29,7 +29,7 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
                   create: (context) => ProductsBloc(),
-                  child: AddItem(category: args as String),
+                  child: AddItem(args: args as AddItemArgs),
                 ));
       case '/cartList':
         return MaterialPageRoute(

@@ -4,6 +4,7 @@ class TextFormWidget extends StatelessWidget {
   final String title;
   final TextEditingController controller;
   final bool readOnly;
+  final String? Function(String?)? validator;
   final Icon? prefixIcon;
   final IconButton? suffixiconButton;
   final bool withlabel, textAreaField;
@@ -15,7 +16,8 @@ class TextFormWidget extends StatelessWidget {
       this.readOnly = false,
       this.withlabel = false,
       this.suffixiconButton,
-      this.textAreaField = false})
+      this.textAreaField = false,
+      this.validator})
       : super(key: key);
 
   @override
@@ -28,9 +30,11 @@ class TextFormWidget extends StatelessWidget {
                 //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                child: TextField(
+                child: TextFormField(
                   controller: controller,
                   readOnly: readOnly,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: validator,
                   decoration: InputDecoration(
                     prefixIcon: prefixIcon,
                     suffixIcon: suffixiconButton,
@@ -50,9 +54,11 @@ class TextFormWidget extends StatelessWidget {
           TextFormField(
             controller: controller,
             readOnly: readOnly,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: validator,
             decoration: InputDecoration(
               suffixIcon: suffixiconButton,
-              border: UnderlineInputBorder(
+              border: const UnderlineInputBorder(
                 borderSide: BorderSide(),
               ),
             ),
@@ -76,6 +82,8 @@ class TextFormWidget extends StatelessWidget {
               controller: controller,
               minLines: 4,
               maxLines: null,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: validator,
               decoration: InputDecoration(
                 suffixIcon: suffixiconButton,
                 border: const OutlineInputBorder(),

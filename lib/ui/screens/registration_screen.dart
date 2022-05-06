@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mycart/ui/widgets/toast_widget.dart';
 
 import '../../model/user_model.dart';
+import '../widgets/loader_widget.dart';
 
 class Registration extends StatefulWidget {
   const Registration({Key? key}) : super(key: key);
@@ -26,9 +27,16 @@ class _RegistrationState extends State<Registration> {
     userBloc = BlocProvider.of<UserBloc>(context)
       ..stream.listen((state) {
         if (state is UserAdded) {
+          LoaderWidget()
+              .showLoader(context, text: "Please wait", showLoader: false);
           FlutterToast.showToast("User Registered Successfully",
               color: Colors.green);
           Navigator.of(context).pushReplacementNamed("/");
+        }
+        if (state is UserAddFail) {
+          LoaderWidget()
+              .showLoader(context, text: "Please wait", showLoader: false);
+          FlutterToast.showToast(state.message, color: Colors.red[900]);
         }
       });
   }
@@ -38,106 +46,135 @@ class _RegistrationState extends State<Registration> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController dateOfBirthController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              /*  Padding(
-                padding: const EdgeInsets.only(top: 60.0),
-                child: Center(
-                  child: SizedBox(
-                      width: 200,
-                      height: 150,
-                      /*decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(50.0)),*/
-                      child: Icon(
-                        Icons.shopping_cart_checkout,
-                        size: 100,
-                        color: Theme.of(context).primaryColor,
-                      )),
-                ),
-              ), */
-              Padding(
-                padding: const EdgeInsets.only(top: 60.0),
-                child: Center(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                          width: 200,
-                          height: 150,
-                          /*decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(50.0)),*/
-                          child: InkWell(
-                              onTap: () {
-                                loadPicker(ImageSource.gallery);
-                              },
-                              child: _images == null
-                                  ? Image.asset("lib/assets/profile.png")
-                                  : ClipOval(
-                                      child: SizedBox.fromSize(
-                                          size: const Size.fromRadius(
-                                              48), // Image radius
-                                          child:
-                                              Image.file(File(_images!.path))),
-                                    ))),
-                      const Text(
-                        "Upload Profile Picture",
-                        style: TextStyle(
-                            color: Colors.grey, fontWeight: FontWeight.w500),
-                      )
-                    ],
+          child: Form(
+            key: formKey,
+            child: Column(
+              children: <Widget>[
+                /*  Padding(
+                  padding: const EdgeInsets.only(top: 60.0),
+                  child: Center(
+                    child: SizedBox(
+                        width: 200,
+                        height: 150,
+                        /*decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(50.0)),*/
+                        child: Icon(
+                          Icons.shopping_cart_checkout,
+                          size: 100,
+                          color: Theme.of(context).primaryColor,
+                        )),
+                  ),
+                ), */
+                Padding(
+                  padding: const EdgeInsets.only(top: 60.0),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                            width: 200,
+                            height: 150,
+                            /*decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(50.0)),*/
+                            child: InkWell(
+                                onTap: () {
+                                  loadPicker(ImageSource.gallery);
+                                },
+                                child: _images == null
+                                    ? Image.asset("lib/assets/profile.png")
+                                    : Container(
+                                        width: 120.0,
+                                        height: 120.0,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: FileImage(
+                                                    File(_images!.path))))))),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            _images == null
+                                ? "Upload Profile Picture"
+                                : "Change Profile Image",
+                            style: const TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              TextFormWidget(
+                TextFormWidget(
                   title: "Username",
                   controller: usernameController,
-                  prefixIcon: const Icon(Icons.person)),
-              TextFormWidget(
-                  title: "Password",
-                  controller: passwordController,
-                  prefixIcon: const Icon(Icons.lock)),
-              TextFormWidget(
-                title: "Date Of Birth",
-                controller: dateOfBirthController,
-                readOnly: true,
-                suffixiconButton: IconButton(
-                  icon: const Icon(Icons.edit_calendar),
-                  onPressed: selectDob,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 50.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    context.read<UserBloc>().add(UserAddEvent(User(
-                        userName: usernameController.text,
-                        passWord: passwordController.text,
-                        dateOfBirth: dateOfBirthController.text,
-                        profile: _images!.path)));
-                    /*    Navigator.push(
-                        context, MaterialPageRoute(builder: (_) => HomePage())); */
+                  prefixIcon: const Icon(Icons.person),
+                  validator: (value) {
+                    if (usernameController.text.trim().isEmpty) {
+                      return "Please Enter the username";
+                    }
+                    return null;
                   },
-                  child: const Text(
-                    'Register',
-                    style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+                TextFormWidget(
+                    title: "Password",
+                    controller: passwordController,
+                    validator: (value) {
+                      if ((value?.length ?? 0) < 6) {
+                        return "Password should be greater then 5 character";
+                      }
+                      return null;
+                    },
+                    prefixIcon: const Icon(Icons.lock)),
+                TextFormWidget(
+                  title: "Date Of Birth",
+                  controller: dateOfBirthController,
+                  readOnly: true,
+                  suffixiconButton: IconButton(
+                    icon: const Icon(Icons.edit_calendar),
+                    onPressed: selectDob,
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 130,
-              ),
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pushReplacementNamed("/");
-                  },
-                  child: const Text('Already have account? Login'))
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 50.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        LoaderWidget().showLoader(context,
+                            text: "Please wait", showLoader: true);
+                        context.read<UserBloc>().add(UserAddEvent(User(
+                            userName: usernameController.text,
+                            passWord: passwordController.text,
+                            dateOfBirth: dateOfBirthController.text,
+                            profile: _images != null ? _images!.path : "")));
+                        /*    Navigator.push(
+                          context, MaterialPageRoute(builder: (_) => HomePage())); */
+                      }
+                    },
+                    child: const Text(
+                      'Register',
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 130,
+                ),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pushReplacementNamed("/");
+                    },
+                    child: const Text('Already have account? Login'))
+              ],
+            ),
           ),
         ),
       ),

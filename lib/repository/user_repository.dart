@@ -1,10 +1,8 @@
-import 'dart:convert';
+
 import 'dart:core';
 
-import 'package:flutter/services.dart';
 import 'package:mycart/model/login_request.dart';
 
-import 'package:mycart/model/products_model.dart';
 import 'package:mycart/model/sqlite/sqlite_model.dart';
 import 'package:mycart/resources/utilities/cart_secure_store.dart';
 
@@ -12,7 +10,12 @@ import '../model/user_model.dart';
 
 class UserRepository {
   Future<User> addUser(User user) async {
-    final response = await SqlUser(
+    final duplicateUser =
+        await SqlUser().select().userName.equals(user.userName).toSingle();
+    if (duplicateUser != null) {
+      throw ("UserName already taken");
+    }
+   await SqlUser(
             userName: user.userName,
             passWord: user.passWord,
             profile: user.profile,
@@ -20,7 +23,7 @@ class UserRepository {
         .upsert();
 
     var userResponse = await SqlUser().select().toList();
-    print(userResponse.last.toMap());
+   
     return User.fromJson(userResponse.last.toMap());
   }
 
@@ -39,7 +42,8 @@ class UserRepository {
         CartSecureStore.profile, response.profile);
     await CartSecureStore.setSecureStore(
         CartSecureStore.userId, response.userId.toString());
-
+ await CartSecureStore.setSecureStore(
+        CartSecureStore.dob, response.dateOfBirth.toString());
     return User.fromJson(response.toMap());
   }
 }

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:core';
 
-import 'package:flutter/services.dart';
 
 import 'package:mycart/model/products_model.dart';
 import 'package:mycart/model/sqlite/sqlite_model.dart';
@@ -12,8 +11,12 @@ class ProductsRepository {
   Future<List<Product>> data(String category) async {
     String userId =
         await CartSecureStore.getSecureStore(CartSecureStore.userId);
-    final response =
-        await SqlProducts().select().userId.equals(userId).toList();
+    final response = await SqlProducts()
+        .select()
+        .userId
+        .equals(userId)
+        .orderBy("orderId")
+        .toList();
 
     List<Product> productsResponse = List.from(
         response.map((e) => Product.fromJson(json.decode(e.toJson()))));
@@ -26,10 +29,10 @@ class ProductsRepository {
   Future<Product> addProduct(Product product) async {
     product.userId =
         await CartSecureStore.getSecureStore(CartSecureStore.userId);
-    final response = await SqlProducts.fromMap(product.toJson()).upsert();
+    await SqlProducts.fromMap(product.toJson()).upsert();
 
     var productResponse = await SqlProducts().select().toList();
-    print(productResponse.last.toMap());
+
     return Product.fromJson(productResponse.last.toMap());
   }
 

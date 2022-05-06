@@ -11,6 +11,10 @@ class UserLoad extends UserState {}
 class UserAdded extends UserState {}
 
 class LoginSuccess extends UserState {}
+class UserAddFail extends UserState {  final String message;
+
+  UserAddFail(this.message);
+}
 
 class LoginFailed extends UserState {
   final String message;

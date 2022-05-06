@@ -6,6 +6,7 @@ class CartSecureStore {
 
   static const String profile = 'profile';
   static const String userId = 'userId';
+  static const String dob = 'dob';
   static Future<void> setSecureStore(String key, var data) async {
     await _secureStore.write(key: key, value: data);
   }

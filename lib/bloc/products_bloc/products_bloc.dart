@@ -18,11 +18,11 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       }
     });
     on<ProductAddEvent>((event, emit) async {
-      final products = await ProductsRepository().addProduct(event.product);
+      await ProductsRepository().addProduct(event.product);
       emit(ProductsAdded());
     });
     on<ProductDeleteEvent>((event, emit) async {
-      final products =
+     
           await ProductsRepository().deleteProduct(event.productId);
       emit(ProductsDeleted());
     });

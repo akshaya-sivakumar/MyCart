@@ -4,10 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:mycart/bloc/products_bloc/products_bloc.dart';
 import 'package:mycart/model/sqlite/sqlite_model.dart';
-import 'package:mycart/ui/widgets/textform_widget.dart';
+import 'package:mycart/ui/screens/add_item.dart';
+
 import 'package:mycart/ui/widgets/toast_widget.dart';
 
-import '../widgets/AppScaffold.dart';
+import '../../model/products_model.dart';
+import '../widgets/app_scaffold.dart';
 import '../widgets/text_widget.dart';
 
 class CartList extends StatefulWidget {
@@ -48,7 +50,7 @@ class _CartListState extends State<CartList>
     return DefaultTabController(
       length: tabController.length,
       child: AppScaffold(
-        title: Text("My Cart"),
+        title: const Text("My Cart"),
         bottom: TabBar(
             controller: tabController,
             isScrollable: true,
@@ -60,205 +62,213 @@ class _CartListState extends State<CartList>
                 (index) => Tab(
                       text: categories[index],
                     ))),
-        body: Scaffold(
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: ElevatedButton.icon(
-              onPressed: () {
-                Navigator.pushNamed(context, "/addItem",
-                        arguments: categories[tabController.index])
-                    .then((value) => productsBloc
-                        .add(Fetchproducts(categories[tabController.index])));
-              },
-              icon: const Icon(Icons.add_shopping_cart),
-              label: const Text("Add item")),
-          body: BlocBuilder<ProductsBloc, ProductsState>(
-            /*  buildWhen: (previous, current) {
-              return current is ProductsDone;
-            }, */
-            builder: (context, ProductsState state) {
-              if (state is ProductsLoad) {
-                return Center(
-                    child: CircularProgressIndicator(
-                  color: Theme.of(context).primaryColor,
-                ));
-              }
-              if (state is ProductsError) {
-                return Center(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error,
-                      size: 60,
-                      color: Colors.red[900],
-                    ),
-                    Text("Unknown Error")
-                  ],
-                ));
-              }
-              if (state is ProductsDone) {
-                return Container(
-                  margin: const EdgeInsets.all(10.0),
-                  child: TabBarView(
-                    controller: tabController,
-                    children: List.generate(
-                        tabController.length,
-                        (index) => ListView.builder(
-                            itemCount: state.products.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return Dismissible(
-                                direction: DismissDirection.startToEnd,
-                                key: ObjectKey(state.products[index]),
-                                onDismissed: (direction) async {
-                                  productsBloc.add(ProductDeleteEvent(
-                                      state.products[index].id ?? 0));
-                                },
-                                background: Container(
-                                    padding: const EdgeInsets.only(
-                                      left: 10.0,
-                                    ),
-                                    color: HexColor("#d8000c"),
-                                    child: const Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text('Delete >>',
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold)),
-                                    )),
-                                child: ExpandableNotifier(
-                                    child: Builder(builder: (context) {
-                                  var controller = ExpandableController.of(
-                                      context,
-                                      required: true)!;
+        body: BlocBuilder<ProductsBloc, ProductsState>(
+          builder: (context, ProductsState state) {
+            if (state is ProductsLoad) {
+              return loadData(context);
+            }
+            if (state is ProductsError) {
+              return const ErrorWidget();
+            }
+            if (state is ProductsDone) {
+              return Scaffold(
+                  floatingActionButtonLocation:
+                      FloatingActionButtonLocation.centerFloat,
+                  floatingActionButton: ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/addItem",
+                                arguments: AddItemArgs(
+                                    categories[tabController.index],
+                                    (state.products.length).toString()))
+                            .then((value) => productsBloc.add(Fetchproducts(
+                                categories[tabController.index])));
+                      },
+                      icon: const Icon(Icons.add_shopping_cart),
+                      label: const Text("Add item")),
+                  body: bodyData(state));
+            }
 
-                                  return Container(
-                                    margin: EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        border:
-                                            Border.all(color: Colors.green)),
-                                    child: Column(children: [
-                                      ScrollOnExpand(
-                                          /*  scrollOnExpand: true,
-                                      scrollOnCollapse: true, */
-                                          child: ExpandablePanel(
-                                        theme: const ExpandableThemeData(
-                                          hasIcon: false,
-                                          useInkWell: true,
-                                        ),
-                                        collapsed: Container(
-                                          height: 1,
-                                        ),
-                                        header: Container(
-                                            margin: EdgeInsets.all(10),
-                                            padding: EdgeInsets.only(
-                                                left: 10,
-                                                top: 10,
-                                                right: 10,
-                                                bottom: 10),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(state.products[index]
-                                                    .productName),
-                                                Text(state.products[index]
-                                                    .modelNumber),
-                                                Text(state
-                                                    .products[index].price),
-                                              ],
-                                            )),
-                                        expanded: Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.9,
-                                          decoration: BoxDecoration(
-                                              border: Border(
-                                                  top: BorderSide(
-                                                      color: Colors.grey))),
-                                          margin: EdgeInsets.all(10),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              TextWidget(
-                                                  text: "Description",
-                                                  fontWeight: FontWeight.bold),
-                                              TextWidget(
-                                                  text: "       " +
-                                                      state.products[index]
-                                                          .description),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  TextWidget(
-                                                      text:
-                                                          "Manufactured Date ",
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                  Text(state.products[index]
-                                                      .manufactureDate)
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              TextWidget(
-                                                  text: "Manufactured Address ",
-                                                  fontWeight: FontWeight.bold),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              TextWidget(
-                                                  text: state.products[index]
-                                                      .manufactureAddress),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ))
-                                    ]),
-                                  );
-                                })),
-                              );
-                            })),
-                  ),
-                );
-              }
-
-              return Center(
-                  child: CircularProgressIndicator(
-                color: Theme.of(context).primaryColor,
-              ));
-            },
-          ),
+            return loadData(context);
+          },
         ),
       ),
     );
   }
 
+  Center loadData(BuildContext context) {
+    return Center(
+        child: CircularProgressIndicator(
+      color: Theme.of(context).primaryColor,
+    ));
+  }
+
+  Container bodyData(ProductsDone state) {
+    return Container(
+      margin: const EdgeInsets.all(10.0),
+      child: TabBarView(
+        controller: tabController,
+        children: List.generate(
+          tabController.length,
+          (index) => ReorderableListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: state.products.length,
+              onReorder: (int oldIndex, newIndex) async {
+                final bool isPositionChanged =
+                    (oldIndex < newIndex && oldIndex != (newIndex - 1)) ||
+                        (oldIndex > newIndex && oldIndex != newIndex);
+                if (isPositionChanged) {
+                  await reorderData(oldIndex, newIndex, state.products);
+                  await reorderData(newIndex, oldIndex, state.products);
+                  productsBloc
+                      .add(Fetchproducts(categories[tabController.index]));
+                }
+              },
+              itemBuilder: (context, index) {
+                return Dismissible(
+                  direction: DismissDirection.endToStart,
+                  key: ObjectKey(state.products[index]),
+                  onDismissed: (direction) async {
+                    productsBloc.add(ProductDeleteEvent(
+                        state.products[index].productId ?? 0));
+                  },
+                  background: Container(
+                      padding: const EdgeInsets.only(
+                        right: 10.0,
+                      ),
+                      color: HexColor("#d8000c"),
+                      child: const Align(
+                        alignment: Alignment.centerRight,
+                        child: Text('<<Delete',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold)),
+                      )),
+                  child: ExpandableNotifier(child: Builder(builder: (context) {
+                  
+
+                    return Container(
+                      margin: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.green)),
+                      child: Column(children: [
+                        ScrollOnExpand(
+                            /*  scrollOnExpand: true,
+                                    scrollOnCollapse: true, */
+                            child: ExpandablePanel(
+                          theme: const ExpandableThemeData(
+                            hasIcon: false,
+                            useInkWell: true,
+                          ),
+                          collapsed: Container(
+                            height: 1,
+                          ),
+                          header: Container(
+                              margin: const EdgeInsets.all(10),
+                              padding: const EdgeInsets.only(
+                                  left: 10, top: 10, right: 10, bottom: 10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(state.products[index].productName),
+                                  Text(state.products[index].modelNumber),
+                                  Text(state.products[index].price),
+                                ],
+                              )),
+                          expanded: Container(
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            decoration: const BoxDecoration(
+                                border: Border(
+                                    top: BorderSide(color: Colors.grey))),
+                            margin: const EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Table(
+                                  children: [
+                                    tableRowdata("Description",
+                                        state.products[index].description),
+                                    tableRowdata("Manufactured Date",
+                                        state.products[index].manufactureDate),
+                                    tableRowdata(
+                                        "Manufactured Address ",
+                                        state
+                                            .products[index].manufactureAddress)
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ))
+                      ]),
+                    );
+                  })),
+                );
+              }),
+        ),
+      ),
+    );
+  }
+
+  Future<void> reorderData(
+      int oldIndex, int newIndex, List<Product> products) async {
+    var product = products
+        .where((element) => element.orderId == oldIndex.toString())
+        .toList()
+        .first;
+
+    product.orderId = newIndex.toString();
+
+    await SqlProducts.fromMap(product.toJson()).upsert();
+  }
+
+  TableRow tableRowdata(String title, data) {
+    return TableRow(children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: TextWidget(text: title, fontWeight: FontWeight.bold),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: TextWidget(text: data),
+      ),
+    ]);
+  }
+
   bottomSheet(BuildContext context) {
     return showModalBottomSheet<void>(
         context: context,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10.0))),
         builder: (BuildContext context) {
-          return SizedBox();
+          return const SizedBox();
         });
+  }
+}
+
+class ErrorWidget extends StatelessWidget {
+  const ErrorWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.error,
+          size: 60,
+          color: Colors.red[900],
+        ),
+        const Text("Unknown Error")
+      ],
+    ));
   }
 }
