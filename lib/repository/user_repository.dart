@@ -1,4 +1,3 @@
-
 import 'dart:core';
 
 import 'package:mycart/model/login_request.dart';
@@ -15,7 +14,7 @@ class UserRepository {
     if (duplicateUser != null) {
       throw ("UserName already taken");
     }
-   await SqlUser(
+    await SqlUser(
             userName: user.userName,
             passWord: user.passWord,
             profile: user.profile,
@@ -23,7 +22,7 @@ class UserRepository {
         .upsert();
 
     var userResponse = await SqlUser().select().toList();
-   
+
     return User.fromJson(userResponse.last.toMap());
   }
 
@@ -42,7 +41,7 @@ class UserRepository {
         CartSecureStore.profile, response.profile);
     await CartSecureStore.setSecureStore(
         CartSecureStore.userId, response.userId.toString());
- await CartSecureStore.setSecureStore(
+    await CartSecureStore.setSecureStore(
         CartSecureStore.dob, response.dateOfBirth.toString());
     return User.fromJson(response.toMap());
   }
