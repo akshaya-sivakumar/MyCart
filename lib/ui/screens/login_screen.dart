@@ -19,6 +19,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  bool obscure = true;
   final LocalAuthentication auth = LocalAuthentication();
   bool? _canCheckBiometrics;
   String _authorized = 'Not Authorized';
@@ -48,10 +49,9 @@ class _LoginState extends State<Login> {
   Future<void> biometriclogin() async {
     var userName =
         await CartSecureStore.getSecureStore(CartSecureStore.userName);
-    if (userName != "" ) {
+    if (userName != "") {
       await _checkBiometrics();
       if (_canCheckBiometrics ?? false) {
-     
         await _authenticate();
         if (_authorized == "Authorized") {
           FlutterToast.showToast("Welcome $userName");
@@ -72,6 +72,7 @@ class _LoginState extends State<Login> {
           child: Form(
             key: formKey,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 60.0),
@@ -108,6 +109,15 @@ class _LoginState extends State<Login> {
                       }
                       return null;
                     },
+                    obscure: obscure,
+                    suffixiconButton: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            obscure = !obscure;
+                          });
+                        },
+                        icon: Icon(
+                            obscure ? Icons.visibility_off : Icons.visibility)),
                     prefixIcon: const Icon(Icons.lock)),
                 Padding(
                   padding: const EdgeInsets.only(top: 50.0),
@@ -128,14 +138,14 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 130,
-                ),
-                TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed("/registration");
-                    },
-                    child: const Text('New User? Create Account'))
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 35),
+                  child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed("/registration");
+                      },
+                      child: const Text('New User? Create Account')),
+                )
               ],
             ),
           ),
@@ -150,7 +160,6 @@ class _LoginState extends State<Login> {
       canCheckBiometrics = await auth.canCheckBiometrics;
     } on PlatformException {
       canCheckBiometrics = false;
-    
     }
     if (!mounted) {
       return;
@@ -160,8 +169,6 @@ class _LoginState extends State<Login> {
       _canCheckBiometrics = canCheckBiometrics;
     });
   }
-
-  
 
   Future<void> _authenticate() async {
     bool authenticated = false;
@@ -176,10 +183,8 @@ class _LoginState extends State<Login> {
           stickyAuth: true,
         ),
       );
-      setState(() {
-      });
+      setState(() {});
     } on PlatformException catch (e) {
-    
       setState(() {
         _authorized = 'Error - ${e.message}';
       });
@@ -192,7 +197,4 @@ class _LoginState extends State<Login> {
     setState(
         () => _authorized = authenticated ? 'Authorized' : 'Not Authorized');
   }
-
-
 }
-

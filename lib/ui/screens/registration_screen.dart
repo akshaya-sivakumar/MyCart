@@ -20,6 +20,7 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
+  bool obscure = true;
   late UserBloc userBloc;
   @override
   void initState() {
@@ -55,25 +56,11 @@ class _RegistrationState extends State<Registration> {
           child: Form(
             key: formKey,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                /*  Padding(
-                  padding: const EdgeInsets.only(top: 60.0),
-                  child: Center(
-                    child: SizedBox(
-                        width: 200,
-                        height: 150,
-                        /*decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(50.0)),*/
-                        child: Icon(
-                          Icons.shopping_cart_checkout,
-                          size: 100,
-                          color: Theme.of(context).primaryColor,
-                        )),
-                  ),
-                ), */
                 Padding(
-                  padding: const EdgeInsets.only(top: 60.0),
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.03),
                   child: Center(
                     child: Column(
                       children: [
@@ -127,6 +114,15 @@ class _RegistrationState extends State<Registration> {
                 TextFormWidget(
                     title: "Password",
                     controller: passwordController,
+                    obscure: obscure,
+                    suffixiconButton: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            obscure = !obscure;
+                          });
+                        },
+                        icon: Icon(
+                            obscure ? Icons.visibility_off : Icons.visibility)),
                     validator: (value) {
                       if ((value?.length ?? 0) < 6) {
                         return "Password should be greater then 5 character";
@@ -138,13 +134,20 @@ class _RegistrationState extends State<Registration> {
                   title: "Date Of Birth",
                   controller: dateOfBirthController,
                   readOnly: true,
+                  validator: (value) {
+                    if (dateOfBirthController.text.trim().isEmpty) {
+                      return "Please select date";
+                    }
+                    return null;
+                  },
                   suffixiconButton: IconButton(
                     icon: const Icon(Icons.edit_calendar),
                     onPressed: selectDob,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 50.0),
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.04),
                   child: ElevatedButton(
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
@@ -165,8 +168,8 @@ class _RegistrationState extends State<Registration> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 130,
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
                 ),
                 TextButton(
                     onPressed: () {

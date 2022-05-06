@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class TextFormWidget extends StatelessWidget {
   final String title;
   final TextEditingController controller;
-  final bool readOnly;
+  final bool readOnly, obscure;
   final String? Function(String?)? validator;
   final Icon? prefixIcon;
   final IconButton? suffixiconButton;
@@ -14,6 +14,7 @@ class TextFormWidget extends StatelessWidget {
       required this.controller,
       this.prefixIcon,
       this.readOnly = false,
+      this.obscure = false,
       this.withlabel = false,
       this.suffixiconButton,
       this.textAreaField = false,
@@ -35,6 +36,7 @@ class TextFormWidget extends StatelessWidget {
                   readOnly: readOnly,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: validator,
+                  obscureText: obscure,
                   decoration: InputDecoration(
                     prefixIcon: prefixIcon,
                     suffixIcon: suffixiconButton,
