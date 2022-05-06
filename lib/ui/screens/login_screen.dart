@@ -40,7 +40,7 @@ class _LoginState extends State<Login> {
           LoaderWidget()
               .showLoader(context, text: "Please wait", showLoader: false);
           FlutterToast.showToast("Login Successfully", color: Colors.green);
-          Navigator.pushNamed(context, "/cartList");
+          Navigator.pushReplacementNamed(context, "/cartList");
         }
       });
     biometriclogin();
@@ -141,7 +141,9 @@ class _LoginState extends State<Login> {
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 35),
                   child: TextButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        await CartSecureStore.deleteSecureStore(
+                            CartSecureStore.userName);
                         Navigator.of(context).pushNamed("/registration");
                       },
                       child: const Text('New User? Create Account')),

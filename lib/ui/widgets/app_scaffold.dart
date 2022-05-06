@@ -48,7 +48,10 @@ class _AppScaffoldState extends State<AppScaffold> {
           actions: [
             Row(
               children: [
-                Text(userName != "" ? capitalize(userName ?? "-") : ""),
+                Text(
+                  userName != "" ? capitalize(userName ?? "-") : "",
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
                 IconButton(
                   onPressed: () {
                     showDialog(

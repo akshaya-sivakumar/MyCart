@@ -1,4 +1,5 @@
 import 'package:expandable/expandable.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -41,7 +42,6 @@ class _CartListState extends State<CartList>
           productsBloc.add(Fetchproducts(categories[tabController.index]));
         }
       });
-
     productsBloc.add(Fetchproducts(categories[tabController.index]));
   }
 
@@ -58,7 +58,7 @@ class _CartListState extends State<CartList>
               productsBloc.add(Fetchproducts(categories[index]));
             },
             tabs: List.generate(
-                tabController.length,
+                5,
                 (index) => Tab(
                       text: categories[index],
                     ))),
@@ -85,7 +85,7 @@ class _CartListState extends State<CartList>
                       },
                       icon: const Icon(Icons.add_shopping_cart),
                       label: const Text("Add item")),
-                  body: bodyData(state));
+                  body: bodyData(state.products));
             }
 
             return loadData(context);
@@ -102,23 +102,26 @@ class _CartListState extends State<CartList>
     ));
   }
 
-  Container bodyData(ProductsDone state) {
+  Container bodyData(List<Product> products) {
+    print(products.first.productName);
     return Container(
       margin: const EdgeInsets.all(10.0),
       child: TabBarView(
         controller: tabController,
+        physics: const NeverScrollableScrollPhysics(),
+        dragStartBehavior: DragStartBehavior.down,
         children: List.generate(
-          tabController.length,
-          (index) => ReorderableListView.builder(
+          5,
+          (i) => ReorderableListView.builder(
               scrollDirection: Axis.vertical,
-              itemCount: state.products.length,
+              itemCount: products.length,
               onReorder: (int oldIndex, newIndex) async {
                 final bool isPositionChanged =
                     (oldIndex < newIndex && oldIndex != (newIndex - 1)) ||
                         (oldIndex > newIndex && oldIndex != newIndex);
                 if (isPositionChanged) {
-                  await reorderData(oldIndex, newIndex, state.products);
-                  await reorderData(newIndex, oldIndex, state.products);
+                  await reorderData(oldIndex, newIndex, products);
+                  await reorderData(newIndex, oldIndex, products);
                   productsBloc
                       .add(Fetchproducts(categories[tabController.index]));
                 }
@@ -126,10 +129,10 @@ class _CartListState extends State<CartList>
               itemBuilder: (context, index) {
                 return Dismissible(
                   direction: DismissDirection.endToStart,
-                  key: ObjectKey(state.products[index]),
+                  key: ObjectKey(products[index]),
                   onDismissed: (direction) async {
-                    productsBloc.add(ProductDeleteEvent(
-                        state.products[index].productId ?? 0));
+                    productsBloc.add(
+                        ProductDeleteEvent(products[index].productId ?? 0));
                   },
                   background: Container(
                       padding: const EdgeInsets.only(
@@ -145,8 +148,6 @@ class _CartListState extends State<CartList>
                                 fontWeight: FontWeight.bold)),
                       )),
                   child: ExpandableNotifier(child: Builder(builder: (context) {
-                  
-
                     return Container(
                       margin: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
@@ -172,9 +173,9 @@ class _CartListState extends State<CartList>
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(state.products[index].productName),
-                                  Text(state.products[index].modelNumber),
-                                  Text(state.products[index].price),
+                                  Text(products[index].productName),
+                                  Text(products[index].modelNumber),
+                                  Text(products[index].price),
                                 ],
                               )),
                           expanded: Container(
@@ -192,13 +193,11 @@ class _CartListState extends State<CartList>
                                 Table(
                                   children: [
                                     tableRowdata("Description",
-                                        state.products[index].description),
+                                        products[index].description),
                                     tableRowdata("Manufactured Date",
-                                        state.products[index].manufactureDate),
-                                    tableRowdata(
-                                        "Manufactured Address ",
-                                        state
-                                            .products[index].manufactureAddress)
+                                        products[index].manufactureDate),
+                                    tableRowdata("Manufactured Address ",
+                                        products[index].manufactureAddress)
                                   ],
                                 ),
                               ],
